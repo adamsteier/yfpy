@@ -7,6 +7,7 @@ __email__ = "uberfastman@uberfastman.dev"
 
 import os
 import sys
+import csv
 from logging import DEBUG
 from pathlib import Path
 
@@ -175,7 +176,7 @@ def get_league_id():
     # league_id = "655434"  # NFL - 2020
     # league_id = "413954"  # NFL - 2021
     # league_id = "791337"  # NFL - 2022 (divisions)
-    league_id = "321958"  # NFL - 2023
+    league_id = "935667"  # NFL - 2023
 
     # HOCKEY
     # league_id = "69624"  # NHL - 2012
@@ -321,6 +322,19 @@ player_key = f"{game_id}.p.{player_id}"
 # print(repr(yahoo_query.get_player_ownership(player_key)))
 # print(repr(yahoo_query.get_player_percent_owned_by_week(player_key, chosen_week)))
 # print(repr(yahoo_query.get_player_draft_analysis(player_key)))
+
+# Fetch league players
+all_players = yahoo_query.get_league_players()
+
+# Filter for running backs
+running_backs = [player for player in all_players if player['eligible_positions'][0]['position'] == 'RB']
+
+# Get ownership data for each running back
+for rb in running_backs:
+    player_key = rb['player_key']
+    ownership_data = yahoo_query.get_player_ownership(player_key)
+    ownership_percentage = ownership_data['percent_owned']
+    print(f"{rb['name']['full']} - Ownership: {ownership_percentage}%")
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # CHECK FOR MISSING DATA FIELDS # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
